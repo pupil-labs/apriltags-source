@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
-project(apriltag)
+project(apriltag
+    VERSION 3.1.0
+    LANGUAGES C
+    DESCRIPTION "AprilTag is a visual fiducial system popular for robotics research"
+    HOMEPAGE_URL "https://github.com/pupil-labs/apriltags-source/"
+)
 
 find_package(OpenCV QUIET)
 
@@ -13,21 +18,25 @@ set(CMAKE_BUILD_TYPE Release)
 file(GLOB TAG_FILES ${PROJECT_SOURCE_DIR}/tag*.c)
 set_source_files_properties(SOURCE ${TAG_FILES} PROPERTIES COMPILE_FLAGS -O0)
 add_library(${PROJECT_NAME} SHARED ${APRILTAG_SRCS} ${COMMON_SRC} ${TAG_FILES})
-if (MSVC)
+
+if(MSVC)
     # FindThreads will not find pthread.h with MSVC so we use pthreads-win
     set(PTHREADS_WIN_INCLUDE_DIR "NOTSET" CACHE PATH "Path to the pthreads-win include dir")
     set(PTHREADS_WIN_IMPORT_LIB_PATH "NOTSET" CACHE FILEPATH "Path to the pthreads-win import library")
 
     message(STATUS "Validating pthreads-win config:")
-    if (PTHREADS_WIN_INCLUDE_DIR STREQUAL "NOTSET")
+
+    if(PTHREADS_WIN_INCLUDE_DIR STREQUAL "NOTSET")
         message(FATAL_ERROR "Required variable PTHREADS_WIN_INCLUDE_DIR is not set!")
-    endif ()
-    if (PTHREADS_WIN_IMPORT_LIB_PATH STREQUAL "NOTSET")
+    endif()
+
+    if(PTHREADS_WIN_IMPORT_LIB_PATH STREQUAL "NOTSET")
         message(FATAL_ERROR "Required variable PTHREADS_WIN_IMPORT_LIB_PATH is not set!")
-    endif ()
+    endif()
+
     message(STATUS "  PTHREADS_WIN_INCLUDE_DIR: ${PTHREADS_WIN_INCLUDE_DIR}")
     message(STATUS "  PTHREADS_WIN_IMPORT_LIB_PATH:${PTHREADS_WIN_IMPORT_LIB_PATH}")
-    
+
     # winmm is necessary for __imp_timeGetTime
     include_directories(${PTHREADS_WIN_INCLUDE_DIR})
     add_definitions(-DHAVE_STRUCT_TIMESPEC)
@@ -37,7 +46,12 @@ else()
     target_link_libraries(${PROJECT_NAME} Threads::Threads m)
 endif()
 
-set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION 3 VERSION 3.1.0)
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+    SOVERSION ${PROJECT_VERSION}
+    VERSION ${PROJECT_VERSION}
+)
 
 include(GNUInstallDirs)
 target_include_directories(${PROJECT_NAME} PUBLIC
