@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
 project(apriltag)
 
 find_package(OpenCV QUIET)
@@ -27,7 +27,7 @@ if (MSVC)
     endif ()
     message(STATUS "  PTHREADS_WIN_INCLUDE_DIR: ${PTHREADS_WIN_INCLUDE_DIR}")
     message(STATUS "  PTHREADS_WIN_IMPORT_LIB_PATH:${PTHREADS_WIN_IMPORT_LIB_PATH}")
-    
+
     # winmm is necessary for __imp_timeGetTime
     include_directories(${PTHREADS_WIN_INCLUDE_DIR})
     add_definitions(-DHAVE_STRUCT_TIMESPEC)
